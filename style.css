@@ -1,0 +1,46 @@
+/* Hero section styling */
+#hero {
+    background: url('background-image.jpg') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* About section */
+#about img {
+    width: 250px;
+    margin-bottom: 20px;
+}
+
+#about p {
+    font-size: 18px;
+}
+
+/* Progress bars styling */
+.progress {
+    height: 30px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+}
+
+/* Projects section */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+body.dark-mode .navbar {
+    background-color: #333;
+}
