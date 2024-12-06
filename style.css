@@ -8,8 +8,8 @@
 }
 /*profile size */
 .square-image {
-    width: 150px;   /* Set width to your desired value */
-    height: 150px;  /* Set height to the same value to make it square */
+    width: 200px;   /* Set width to your desired value */
+    height: 200px;  /* Set height to the same value to make it square */
     object-fit: cover; /* Ensures the image covers the square area without distortion */
 }
 
