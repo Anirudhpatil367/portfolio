@@ -319,5 +319,379 @@
 
     <!-- Custom JS -->
     <script src="script.js"></script>
+        <!-- Chat Widget Button -->
+<div id="chat-button" style="position: fixed; bottom: 20px; right: 20px; background:#0a2540; color:#fff; border-radius:50%; width:60px; height:60px; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:1000; font-size:28px;">
+    💬
+  </div>
+  
+  <!-- Chat Widget Popup -->
+  <div id="chat-popup" style="display:none; position: fixed; bottom: 90px; right: 20px; width: 320px; max-height: 400px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; flex-direction: column; z-index: 1001; font-family: Arial, sans-serif;">
+    <div id="chat-header" style="background: #0a2540; color: white; padding: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+      Assistant
+      <span id="chat-close" style="cursor:pointer; font-weight: normal;">✖️</span>
+    </div>
+    <div id="chat-messages" style="padding: 10px; height: 280px; overflow-y: auto; font-size: 14px; background: #f9f9f9;"></div>
+    <form id="chat-form" style="display: flex; border-top: 1px solid #ddd;">
+      <input id="chat-input" type="text" placeholder="Ask me anything..." autocomplete="off" style="flex-grow:1; border:none; padding: 10px; font-size: 14px;" />
+      <button type="submit" style="background:#0a2540; color:white; border:none; padding: 0 15px; cursor: pointer;">Send</button>
+    </form>
+    <!-- <script>
+        // Toggle popup
+        document.getElementById('chat-button').addEventListener('click', function () {
+          const popup = document.getElementById('chat-popup');
+          popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
+        });
+      
+        // Close popup
+        document.getElementById('chat-close').addEventListener('click', function () {
+          document.getElementById('chat-popup').style.display = 'none';
+        });
+      
+        // Chat form submit
+        document.getElementById('chat-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const input = document.getElementById('chat-input');
+          const message = input.value.trim();
+          if (!message) return;
+      
+          // Show user message
+          const chatBox = document.getElementById('chat-messages');
+          chatBox.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+          chatBox.scrollTop = chatBox.scrollHeight;
+          input.value = '';
+      
+          // Send to backend
+          try {
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: message })
+            });
+            const data = await res.json();
+      
+            // Show assistant reply
+            if (data && data.answer) {
+                chatBox.innerHTML += `<div><strong>Assistant:</strong> ${data.answer}</div>`;
+            } else {
+                chatBox.innerHTML += `<div><strong>Assistant:</strong> Sorry, no reply.</div>`;
+            }
+            // if (data && data.response) {
+            //   chatBox.innerHTML += `<div><strong>Assistant:</strong> ${data.answer}</div>`;
+            // } else {
+            //   chatBox.innerHTML += `<div><strong>Assistant:</strong> Sorry, no reply.</div>`;
+            // }
+            chatBox.scrollTop = chatBox.scrollHeight;
+          } catch (err) {
+            chatBox.innerHTML += `<div><strong>Assistant:</strong> Error contacting server.</div>`;
+            console.error(err);
+          }
+        });
+      </script> -->
+      <!-- <script>
+        const chatButton = document.getElementById('chat-button');
+        const chatPopup = document.getElementById('chat-popup');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+      
+        // Function to add message
+        function addMessage(sender, text) {
+          const msgDiv = document.createElement('div');
+          msgDiv.style.marginBottom = '10px';
+          msgDiv.style.padding = '8px 12px';
+          msgDiv.style.borderRadius = '12px';
+          msgDiv.style.maxWidth = '80%';
+          msgDiv.style.wordBreak = 'break-all';
+          msgDiv.style.cursor = sender === 'assistant' ? 'pointer' : 'default';
+      
+          if (sender === 'user') {
+            msgDiv.style.backgroundColor = '#0a2540';
+            msgDiv.style.color = 'white';
+            msgDiv.style.marginLeft = 'auto';
+          } else {
+            msgDiv.style.backgroundColor = '#e0e0e0';
+            msgDiv.style.color = '#000';
+            msgDiv.style.marginRight = 'auto';
+      
+            // On assistant message click, open chat popup
+            msgDiv.addEventListener('click', () => {
+              chatPopup.style.display = 'flex';
+              chatInput.focus();
+            });
+          }
+          msgDiv.textContent = text;
+          chatMessages.appendChild(msgDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      
+        // Toggle popup when chat button clicked
+        chatButton.addEventListener('click', () => {
+          if (chatPopup.style.display === 'none' || chatPopup.style.display === '') {
+            chatPopup.style.display = 'flex';
+            chatInput.focus();
+          } else {
+            chatPopup.style.display = 'none';
+          }
+        });
+      
+        // Close popup on close button click
+        chatClose.addEventListener('click', () => {
+          chatPopup.style.display = 'none';
+        });
+      
+        // On page load: open chat and show welcome message if chat empty
+        window.addEventListener('load', () => {
+          chatPopup.style.display = 'flex';
+          if (!chatMessages.hasChildNodes()) {
+            addMessage('assistant', 'Welcome to Anirudh Prepared own Assistant! Feel free to ask me any questions related to Anirudh.');
+          }
+          chatInput.focus();
+        });
+      
+        // Handle form submit
+        chatForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const message = chatInput.value.trim();
+          if (!message) return;
+      
+          addMessage('user', message);
+          chatInput.value = '';
+          chatInput.disabled = true;
+      
+          try {
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: message })
+            });
+            const data = await res.json();
+      
+            if (data && data.answer) {
+              addMessage('assistant', data.answer);
+            } else {
+              addMessage('assistant', 'Sorry, no reply.');
+            }
+          } catch (err) {
+            addMessage('assistant', 'Error contacting server.');
+            console.error(err);
+          } finally {
+            chatInput.disabled = false;
+            chatInput.focus();
+          }
+        });
+      </script> -->
+      <script>
+        const chatButton = document.getElementById('chat-button');
+        const chatPopup = document.getElementById('chat-popup');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+      
+        // Function to generate the content with clickable elements
+        function generateMessageContent(text, sender) {
+            const contentNodes = [];
+            let textRemainder = text; // This will hold the part of the string we still need to process
+
+            // Define patterns and their handlers
+            // The order of patterns can matter if one pattern is a substring of another.
+            // Generally, more specific patterns (like full URLs) should come before broader ones (like just IDs).
+            const patterns = [
+                // 1. Full URLs (http/https)
+                { 
+                    regex: /(https?:\/\/[^\s]+)/g, 
+                    handler: (match) => {
+                        const a = document.createElement('a');
+                        a.href = match;
+                        a.textContent = match;
+                        a.target = '_blank'; // Open in new tab
+                        a.style.wordBreak = 'break-all'; // Aggressive break for long URLs
+                        a.style.color = sender === 'user' ? 'lightblue' : '#007bff';
+                        a.style.textDecoration = 'underline';
+                        return a;
+                    }
+                },
+                // 2. Email Addresses (e.g., ap@uab.edu)
+                {
+                    regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+                    handler: (match) => {
+                        const a = document.createElement('a');
+                        a.href = `mailto:${match}`;
+                        a.textContent = match;
+                        a.style.color = sender === 'user' ? 'lightblue' : '#007bff';
+                        a.style.textDecoration = 'underline';
+                        return a;
+                    }
+                },
+                // 3. Phone Numbers (basic international format, adjust regex for specific needs)
+                // Example: +12052226249, (205) 222-6249, 205-222-6249
+                { 
+                    regex: /(\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}(?:\s*x\d+)?)/g, 
+                    handler: (match) => {
+                        const a = document.createElement('a');
+                        // For phone numbers, use tel: scheme and clean up for the href
+                        a.href = `tel:${match.replace(/[\s().-]/g, '')}`; 
+                        a.textContent = match;
+                        a.style.wordBreak = 'break-all'; // To handle long number strings
+                        a.style.color = sender === 'user' ? 'lightblue' : '#007bff';
+                        a.style.textDecoration = 'underline';
+                        return a;
+                    }
+                },
+                // 4. Specific GitHub Username (e.g., Anirudhpatil367)
+                // Using a word boundary \b to ensure it matches as a whole word
+                // If you have multiple specific usernames, you could OR them in the regex: (user1|user2|user3)
+                {
+                    regex: /\b(Anirudhpatil367)\b/g, 
+                    handler: (match) => {
+                        const a = document.createElement('a');
+                        a.href = `https://github.com/${match}`;
+                        a.textContent = match;
+                        a.target = '_blank';
+                        a.style.color = sender === 'user' ? 'lightblue' : '#007bff';
+                        a.style.textDecoration = 'underline';
+                        return a;
+                    }
+                }
+                // Add more patterns here if needed (e.g., Twitter handles, LinkedIn profile IDs if they are not full URLs)
+            ];
+
+            // Loop through the text, finding and replacing matches
+            while (true) {
+                let earliestMatch = null;
+                let earliestMatchPattern = null;
+                let matchStart = -1;
+
+                // Find the earliest match across all defined patterns in the remaining text
+                patterns.forEach(pattern => {
+                    pattern.regex.lastIndex = 0; // Reset regex to search from start of textRemainder
+                    const match = pattern.regex.exec(textRemainder);
+                    if (match && (earliestMatch === null || match.index < earliestMatch.index)) {
+                        earliestMatch = match;
+                        earliestMatchPattern = pattern;
+                        matchStart = match.index;
+                    }
+                });
+
+                if (earliestMatch) {
+                    // Add the plain text that comes *before* the earliest match
+                    if (matchStart > 0) {
+                        contentNodes.push(document.createTextNode(textRemainder.substring(0, matchStart)));
+                    }
+
+                    // Add the interactive element generated by the handler for the match
+                    const element = earliestMatchPattern.handler(earliestMatch[0]);
+                    contentNodes.push(element);
+
+                    // Update textRemainder to start *after* the current match, for the next iteration
+                    textRemainder = textRemainder.substring(matchStart + earliestMatch[0].length);
+                } else {
+                    // No more matches found in the remaining text.
+                    // Add any final remaining plain text.
+                    if (textRemainder.length > 0) {
+                        contentNodes.push(document.createTextNode(textRemainder));
+                    }
+                    break; // Exit the loop
+                }
+            }
+            return contentNodes; // Return the array of nodes (text nodes and link elements)
+        }
+
+        // Function to add message (main function)
+        function addMessage(sender, text) {
+          const msgDiv = document.createElement('div');
+          msgDiv.style.marginBottom = '10px';
+          msgDiv.style.padding = '8px 12px';
+          msgDiv.style.borderRadius = '12px';
+          msgDiv.style.maxWidth = '80%';
+          msgDiv.style.overflowWrap = 'break-word'; // General word wrapping for the entire message bubble
+          msgDiv.style.cursor = sender === 'assistant' ? 'pointer' : 'default';
+      
+          if (sender === 'user') {
+            msgDiv.style.backgroundColor = '#0a2540';
+            msgDiv.style.color = 'white';
+            msgDiv.style.marginLeft = 'auto';
+          } else {
+            msgDiv.style.backgroundColor = '#e0e0e0';
+            msgDiv.style.color = '#000';
+            msgDiv.style.marginRight = 'auto';
+      
+            // On assistant message click, open chat popup
+            msgDiv.addEventListener('click', () => {
+              chatPopup.style.display = 'flex';
+              chatInput.focus();
+            });
+          }
+
+          // Use the new generateMessageContent function to get the structured content
+          const contentNodes = generateMessageContent(text, sender);
+          // Append all generated nodes to the message div
+          contentNodes.forEach(node => msgDiv.appendChild(node));
+          
+          chatMessages.appendChild(msgDiv); // Append the complete message div to the chat
+          chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the bottom
+        }
+      
+        // Toggle popup when chat button clicked
+        chatButton.addEventListener('click', () => {
+          if (chatPopup.style.display === 'none' || chatPopup.style.display === '') {
+            chatPopup.style.display = 'flex';
+            chatInput.focus();
+          } else {
+            chatPopup.style.display = 'none';
+          }
+        });
+      
+        // Close popup on close button click
+        chatClose.addEventListener('click', () => {
+          chatPopup.style.display = 'none';
+        });
+      
+        // On page load: open chat and show welcome message if chat empty
+        window.addEventListener('load', () => {
+          chatPopup.style.display = 'flex';
+          if (!chatMessages.hasChildNodes()) {
+            // REVERTED TO ORIGINAL WELCOME MESSAGE
+            addMessage('assistant', 'Welcome to Anirudh Prepared own Assistant! Feel free to ask me any questions related to Anirudh.');
+          }
+          chatInput.focus();
+        });
+      
+        // Handle form submit
+        chatForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const message = chatInput.value.trim();
+          if (!message) return;
+      
+          addMessage('user', message);
+          chatInput.value = '';
+          chatInput.disabled = true;
+      
+          try {
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: message })
+            });
+            const data = await res.json();
+      
+            if (data && data.answer) {
+              // The 'data.answer' is where the contact information should come from
+              // when the user asks for it. The 'generateMessageContent' will correctly
+              // parse and format any links/numbers/emails within this answer.
+              addMessage('assistant', data.answer);
+            } else {
+              addMessage('assistant', 'Sorry, no reply.');
+            }
+          } catch (err) {
+            addMessage('assistant', 'Error contacting server.');
+            console.error(err);
+          } finally {
+            chatInput.disabled = false;
+            chatInput.focus();
+          }
+        });
+      </script>
 </body>
 </html>
